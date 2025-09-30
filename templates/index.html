@@ -1,0 +1,516 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitGlance AI Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #e6edf3;
+            margin: 0;
+            padding: 2em;
+            background: linear-gradient(135deg, #0d1117, #161b22, #010409);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container { max-width: 900px; margin: auto; }
+        .search-box { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 2em; border-radius: 12px; border: 1px solid #30363d; text-align: center; margin-bottom: 2em; }
+        input[type="text"] { width: 60%; padding: 12px; font-size: 16px; border: 1px solid #30363d; border-radius: 6px; background-color: #0d1117; color: #e6edf3; }
+        button { padding: 12px 24px; font-size: 16px; border: none; background-color: #238636; color: white; border-radius: 6px; cursor: pointer; margin-left: 10px; transition: background-color 0.2s; }
+        button:hover { background-color: #2ea043; }
+        
+        .summarize-btn { background-color: #30363d; font-size: 12px; padding: 5px 10px; margin-left: 10px; vertical-align: middle; }
+        .summarize-btn:hover { background-color: #484f58; }
+        .summarize-btn:disabled { background-color: #21262d; cursor: not-allowed; }
+
+        #results { display: none; }
+        .profile-header { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 2em; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 2em; display: flex; align-items: center; gap: 20px; animation: slideUpFadeIn 0.5s ease-out forwards; }
+        .profile-header img { border-radius: 50%; width: 100px; height: 100px; border: 2px solid #30363d; }
+        .profile-header h2 { margin: 0; }
+        
+        .pinned-repos { margin-bottom: 2em; animation: slideUpFadeIn 0.7s ease-out forwards; }
+        .pinned-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; }
+        .pinned-card { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 1.5em; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column; }
+        .pinned-card h5 { margin: 0 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2em; animation: slideUpFadeIn 0.9s ease-out forwards;}
+        .sidebar, .main-content { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 2em; border-radius: 12px; border: 1px solid #30363d; }
+        h4 { margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px; color: #c9d1d9; }
+        
+        /* New styles for scrollable container */
+        .repo-list-container { max-height: 600px; overflow-y: auto; padding-right: 15px; }
+        
+        .repo-list ul { list-style: none; padding: 0; margin: 0; }
+        .repo-list li { border-bottom: 1px solid #30363d; padding: 15px 0; }
+        .repo-list li:last-child { border-bottom: none; }
+        .repo-list a { text-decoration: none; color: #58a6ff; font-weight: bold; font-size: 1.1em; }
+        .repo-list p { font-size: 0.9em; color: #8b949e; margin: 8px 0 8px; }
+        .repo-list span { font-size: 0.8em; color: #8b949e; margin-right: 15px; }
+        #load-more-container { text-align: center; margin-top: 1.5em; }
+
+        /* New styles for topic pills */
+        .topic-pills { margin-top: 10px; }
+        .topic-pill { display: inline-block; background-color: #388bfd20; color: #79c0ff; padding: 4px 12px; border-radius: 16px; font-size: 12px; margin-right: 5px; margin-bottom: 5px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: #161b22; padding: 2em; border-radius: 12px; max-width: 600px; width: 90%; border: 1px solid #30363d; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #8b949e; }
+        #summary-content ul { padding-left: 20px; line-height: 1.6; }
+        #summary-content li { margin-bottom: 10px; }
+
+        @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animated { animation: slideUpFadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-box">
+            <h1>GitGlance AI Dashboard</h1>
+            <p>A deep-dive analytics platform for GitHub profiles.</p>
+            <div>
+                <input type="text" id="username-input" placeholder="e.g., sdras">
+                <button id="search-button">Search</button>
+            </div>
+        </div>
+        <div id="results"></div>
+    </div>
+    
+    <div class="modal-overlay" id="summary-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close-btn">&times;</span>
+            <h4>AI-Powered README Summary</h4>
+            <div id="summary-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const searchButton = document.getElementById('search-button');
+        const usernameInput = document.getElementById('username-input');
+        const resultsDiv = document.getElementById('results');
+        const summaryModal = document.getElementById('summary-modal');
+        const summaryContent = document.getElementById('summary-content');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        let languageChart = null;
+        let currentPage = 1;
+        let currentUsername = '';
+
+        const getReadmeSummary = async (owner, repo, btn) => {
+            btn.textContent = '...'; btn.disabled = true;
+            summaryContent.innerHTML = '<p>Generating summary with AI...</p>';
+            summaryModal.style.display = 'flex';
+            try {
+                const readmeUrl = `https://api.github.com/repos/${owner}/${repo}/readme`;
+                const readmeResponse = await fetch(readmeUrl);
+                if (!readmeResponse.ok) throw new Error('This repository does not have a README file.');
+                const readmeData = await readmeResponse.json();
+                const readmeContent = atob(readmeData.content);
+                const summaryResponse = await fetch('/api/summarize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: readmeContent })
+                });
+                if (!summaryResponse.ok) throw new Error('Failed to generate summary from the AI service.');
+                const summaryData = await summaryResponse.json();
+                const formattedSummary = '<ul>' + summaryData.summary.split(/[\n-]/).map(line => line.trim().replace(/^\* /, '')).filter(line => line).map(line => `<li>${line}</li>`).join('') + '</ul>';
+                summaryContent.innerHTML = formattedSummary;
+            } catch (error) {
+                summaryContent.innerHTML = `<p style="color: #ff7b72;">${error.message}</p>`;
+            } finally {
+                btn.textContent = 'Summarize'; btn.disabled = false;
+            }
+        };
+        
+        const renderTopicPills = (topics) => {
+            if (!topics || topics.length === 0) return '';
+            return `<div class="topic-pills">${topics.map(topic => `<span class="topic-pill">${topic}</span>`).join('')}</div>`;
+        };
+
+        const renderRepos = (repos) => {
+            return repos.map(repo => `
+                <li>
+                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
+                    <button class="summarize-btn" onclick="getReadmeSummary('${repo.owner.login}', '${repo.name}', this)">Summarize</button>
+                    <p>${repo.description || 'No description available.'}</p>
+                    ${renderTopicPills(repo.topics)}
+                    <div>
+                        <span>⭐ ${repo.stargazers_count}</span>
+                        <span>️🔄 ${repo.forks_count}</span>
+                    </div>
+                </li>
+            `).join('');
+        };
+        
+        const performSearch = async () => {
+            currentUsername = usernameInput.value.trim(); currentPage = 1;
+            if (!currentUsername) { resultsDiv.style.display = 'block'; resultsDiv.innerHTML = '<p style="color: red;">Please enter a username.</p>'; return; }
+            resultsDiv.style.display = 'block'; resultsDiv.innerHTML = '<p>Loading...</p>';
+            try {
+                const profileResponse = await fetch(`/api/user/${currentUsername}?page=1`);
+                if (!profileResponse.ok) throw new Error(`User not found! (Status: ${profileResponse.status})`);
+                const profileData = await profileResponse.json();
+                renderDashboard(profileData);
+                fetchActivityData(currentUsername);
+            } catch (error) { resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`; }
+        };
+
+        const fetchActivityData = async (username) => {
+            try {
+                const activityResponse = await fetch(`/api/user/${username}/activity`);
+                if (activityResponse.ok) {
+                    const activityData = await activityResponse.json();
+                    const streakElement = document.getElementById('streak-data');
+                    if (streakElement) streakElement.textContent = `${activityData.longest_streak} days`;
+                }
+            } catch (error) {
+                console.error("Could not fetch activity data:", error);
+                const streakElement = document.getElementById('streak-data');
+                if (streakElement) streakElement.textContent = 'N/A';
+            }
+        };
+
+        const loadMoreRepos = async () => {
+            currentPage++;
+            const loadMoreButton = document.getElementById('load-more-btn');
+            loadMoreButton.textContent = 'Loading...'; loadMoreButton.disabled = true;
+            try {
+                const response = await fetch(`/api/user/${currentUsername}?page=${currentPage}`);
+                const data = await response.json();
+                const repoList = document.getElementById('repo-list-ul');
+                if (data.repos && data.repos.length > 0) {
+                    repoList.insertAdjacentHTML('beforeend', renderRepos(data.repos));
+                    loadMoreButton.textContent = 'Load More'; loadMoreButton.disabled = false;
+                } else { loadMoreButton.textContent = 'No More Repositories'; }
+            } catch (error) { loadMoreButton.textContent = 'Failed to Load'; console.error("Failed to load more repos:", error); }
+        };
+
+        const renderDashboard = (profileData) => {
+            const profile = profileData.profile, langStats = profileData.language_stats, repos = profileData.repos, pinnedRepos = profileData.pinned_repos;
+            const profileHtml = `<div class="profile-header"><img src="${profile.avatar_url}" alt="Profile Picture"><div><h2><a href="${profile.html_url}" target="_blank" rel="noopener noreferrer">${profile.name || profile.login}</a></h2><p>${profile.bio || ''}</p></div></div>`;
+            
+            let pinnedHtml = '';
+            if (pinnedRepos && pinnedRepos.length > 0) {
+                pinnedHtml = `
+                    <div class="pinned-repos">
+                        <h4>📌 Pinned Repositories</h4>
+                        <div class="pinned-grid">
+                            ${pinnedRepos.map(repo => `
+                                <div class="pinned-card">
+                                    <h5>
+                                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
+                                        <button class="summarize-btn" onclick="getReadmeSummary('${repo.owner.login}', '${repo.name}', this)">Summarize</button>
+                                    </h5>
+                                    <p>${repo.description || 'No description.'}</p>
+                                    ${renderTopicPills(repo.topics)}
+                                    <div style="margin-top: auto; padding-top: 10px;">
+                                        <span>⭐ ${repo.stargazers_count}</span>
+                                        <span>️🔄 ${repo.forks_count}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const gridHtml = `<div class="dashboard-grid"><div class="sidebar"><h4>Profile Stats</h4><p><strong>Followers:</strong> ${profile.followers}</p><p><strong>Following:</strong> ${profile.following}</p><p><strong>Public Repos:</strong> ${profile.public_repos}</p><p><strong>Joined:</strong> ${new Date(profile.created_at).toLocaleDateString()}</p><h4>Activity</h4><p><strong>Longest Streak:</strong> <span id="streak-data">Loading...</span></p><h4>Top Languages</h4><canvas id="languageChart"></canvas></div><div class="main-content"><div class="repo-list"><h4>Latest Repositories</h4><div class="repo-list-container"><ul id="repo-list-ul">${renderRepos(repos)}</ul></div><div id="load-more-container">${repos.length >= 30 ? '<button id="load-more-btn" class="animated">Load More</button>' : ''}</div></div></div></div>`;
+            
+            resultsDiv.innerHTML = profileHtml + pinnedHtml + gridHtml;
+            
+            if (langStats && langStats.length > 0) {
+                const chartCanvas = document.getElementById('languageChart').getContext('2d');
+                if(languageChart) languageChart.destroy();
+                languageChart = new Chart(chartCanvas, { type: 'doughnut', data: { labels: langStats.map(lang => lang[0]), datasets: [{ data: langStats.map(lang => lang[1]), backgroundColor: ['#58a6ff', '#ff7b72', '#f1e05a', '#a97bff', '#388bfd'] }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#e6edf3' }, position: 'top' } } } });
+            }
+            const loadMoreButton = document.getElementById('load-more-btn');
+            if (loadMoreButton) loadMoreButton.addEventListener('click', loadMoreRepos);
+        };
+
+        searchButton.addEventListener('click', performSearch);
+        usernameInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') performSearch(); });
+        modalCloseBtn.addEventListener('click', () => summaryModal.style.display = 'none');
+        window.addEventListener('click', (event) => { if (event.target == summaryModal) summaryModal.style.display = 'none'; });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitGlance AI Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #e6edf3;
+            margin: 0;
+            padding: 2em;
+            background: linear-gradient(135deg, #0d1117, #161b22, #010409);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container { max-width: 900px; margin: auto; }
+        .search-box { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 2em; border-radius: 12px; border: 1px solid #30363d; text-align: center; margin-bottom: 2em; }
+        input[type="text"] { width: 60%; padding: 12px; font-size: 16px; border: 1px solid #30363d; border-radius: 6px; background-color: #0d1117; color: #e6edf3; }
+        button { padding: 12px 24px; font-size: 16px; border: none; background-color: #238636; color: white; border-radius: 6px; cursor: pointer; margin-left: 10px; transition: background-color 0.2s; }
+        button:hover { background-color: #2ea043; }
+        
+        .summarize-btn { background-color: #30363d; font-size: 12px; padding: 5px 10px; margin-left: 10px; vertical-align: middle; }
+        .summarize-btn:hover { background-color: #484f58; }
+        .summarize-btn:disabled { background-color: #21262d; cursor: not-allowed; }
+
+        #results { display: none; }
+        .profile-header { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 2em; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 2em; display: flex; align-items: center; gap: 20px; animation: slideUpFadeIn 0.5s ease-out forwards; }
+        .profile-header img { border-radius: 50%; width: 100px; height: 100px; border: 2px solid #30363d; }
+        .profile-header h2 { margin: 0; }
+        
+        .pinned-repos { margin-bottom: 2em; animation: slideUpFadeIn 0.7s ease-out forwards; }
+        .pinned-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; }
+        .pinned-card { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 1.5em; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column; }
+        .pinned-card h5 { margin: 0 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2em; animation: slideUpFadeIn 0.9s ease-out forwards;}
+        .sidebar, .main-content { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); padding: 2em; border-radius: 12px; border: 1px solid #30363d; }
+        h4 { margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px; color: #c9d1d9; }
+        
+        .repo-list-container { max-height: 600px; overflow-y: auto; padding-right: 15px; }
+        
+        .repo-list ul { list-style: none; padding: 0; margin: 0; }
+        .repo-list li { border-bottom: 1px solid #30363d; padding: 15px 0; }
+        .repo-list li:last-child { border-bottom: none; }
+        .repo-list a { text-decoration: none; color: #58a6ff; font-weight: bold; font-size: 1.1em; }
+        .repo-list p { font-size: 0.9em; color: #8b949e; margin: 8px 0 8px; }
+        .repo-list span { font-size: 0.8em; color: #8b949e; margin-right: 15px; }
+        #load-more-container { text-align: center; margin-top: 1.5em; }
+
+        .topic-pills { margin-top: 10px; }
+        .topic-pill { display: inline-block; background-color: #388bfd20; color: #79c0ff; padding: 4px 12px; border-radius: 16px; font-size: 12px; margin-right: 5px; margin-bottom: 5px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: #161b22; padding: 2em; border-radius: 12px; max-width: 600px; width: 90%; border: 1px solid #30363d; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #8b949e; }
+        #summary-content ul { padding-left: 20px; line-height: 1.6; }
+        #summary-content li { margin-bottom: 10px; }
+
+        @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animated { animation: slideUpFadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-box">
+            <h1>GitGlance AI Dashboard</h1>
+            <p>A deep-dive analytics platform for GitHub profiles.</p>
+            <div>
+                <input type="text" id="username-input" placeholder="e.g., sdras">
+                <button id="search-button">Search</button>
+            </div>
+        </div>
+        <div id="results"></div>
+    </div>
+    
+    <div class="modal-overlay" id="summary-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close-btn">&times;</span>
+            <h4>AI-Powered README Summary</h4>
+            <div id="summary-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const searchButton = document.getElementById('search-button');
+        const usernameInput = document.getElementById('username-input');
+        const resultsDiv = document.getElementById('results');
+        const summaryModal = document.getElementById('summary-modal');
+        const summaryContent = document.getElementById('summary-content');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        let languageChart = null;
+        let currentPage = 1;
+        let currentUsername = '';
+
+        const getReadmeSummary = async (owner, repo, btn) => {
+            btn.textContent = '...'; btn.disabled = true;
+            summaryContent.innerHTML = '<p>Generating summary with AI...</p>';
+            summaryModal.style.display = 'flex';
+            try {
+                const readmeUrl = `https://api.github.com/repos/${owner}/${repo}/readme`;
+                const readmeResponse = await fetch(readmeUrl);
+                if (!readmeResponse.ok) throw new Error('This repository does not have a README file.');
+                const readmeData = await readmeResponse.json();
+                const readmeContent = atob(readmeData.content);
+                const summaryResponse = await fetch('/api/summarize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: readmeContent })
+                });
+                if (!summaryResponse.ok) throw new Error('Failed to generate summary from the AI service.');
+                const summaryData = await summaryResponse.json();
+                const formattedSummary = '<ul>' + summaryData.summary.split(/[\n-]/).map(line => line.trim().replace(/^\* /, '')).filter(line => line).map(line => `<li>${line}</li>`).join('') + '</ul>';
+                summaryContent.innerHTML = formattedSummary;
+            } catch (error) {
+                summaryContent.innerHTML = `<p style="color: #ff7b72;">${error.message}</p>`;
+            } finally {
+                btn.textContent = 'Summarize'; btn.disabled = false;
+            }
+        };
+        
+        const renderTopicPills = (topics) => {
+            if (!topics || topics.length === 0) return '';
+            return `<div class="topic-pills">${topics.map(topic => `<span class="topic-pill">${topic}</span>`).join('')}</div>`;
+        };
+
+        const renderRepos = (repos) => {
+            return repos.map(repo => `
+                <li>
+                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
+                    <button class="summarize-btn" onclick="getReadmeSummary('${repo.owner.login}', '${repo.name}', this)">Summarize</button>
+                    <p>${repo.description || 'No description available.'}</p>
+                    ${renderTopicPills(repo.topics)}
+                    <div>
+                        <span>⭐ ${repo.stargazers_count}</span>
+                        <span>️🔄 ${repo.forks_count}</span>
+                    </div>
+                </li>
+            `).join('');
+        };
+        
+        const performSearch = async (username) => {
+            currentUsername = username;
+            currentPage = 1;
+            
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('q', username);
+            window.history.pushState({}, '', url);
+
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            try {
+                const profileResponse = await fetch(`/api/user/${currentUsername}?page=1`);
+                if (!profileResponse.ok) throw new Error(`User not found! (Status: ${profileResponse.status})`);
+                const profileData = await profileResponse.json();
+                renderDashboard(profileData);
+                fetchActivityData(currentUsername);
+            } catch (error) { resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`; }
+        };
+
+        const fetchActivityData = async (username) => {
+            try {
+                const activityResponse = await fetch(`/api/user/${username}/activity`);
+                if (activityResponse.ok) {
+                    const activityData = await activityResponse.json();
+                    const streakElement = document.getElementById('streak-data');
+                    if (streakElement) streakElement.textContent = `${activityData.longest_streak} days`;
+                }
+            } catch (error) {
+                console.error("Could not fetch activity data:", error);
+                const streakElement = document.getElementById('streak-data');
+                if (streakElement) streakElement.textContent = 'N/A';
+            }
+        };
+
+        const loadMoreRepos = async () => {
+            currentPage++;
+            const loadMoreButton = document.getElementById('load-more-btn');
+            loadMoreButton.textContent = 'Loading...'; loadMoreButton.disabled = true;
+            try {
+                const response = await fetch(`/api/user/${currentUsername}?page=${currentPage}`);
+                const data = await response.json();
+                const repoList = document.getElementById('repo-list-ul');
+                if (data.repos && data.repos.length > 0) {
+                    repoList.insertAdjacentHTML('beforeend', renderRepos(data.repos));
+                    loadMoreButton.textContent = 'Load More'; loadMoreButton.disabled = false;
+                } else { loadMoreButton.textContent = 'No More Repositories'; }
+            } catch (error) { loadMoreButton.textContent = 'Failed to Load'; console.error("Failed to load more repos:", error); }
+        };
+
+        const renderDashboard = (profileData) => {
+            const profile = profileData.profile, langStats = profileData.language_stats, repos = profileData.repos, pinnedRepos = profileData.pinned_repos;
+            const profileHtml = `<div class="profile-header"><img src="${profile.avatar_url}" alt="Profile Picture"><div><h2><a href="${profile.html_url}" target="_blank" rel="noopener noreferrer">${profile.name || profile.login}</a></h2><p>${profile.bio || ''}</p></div></div>`;
+            
+            let pinnedHtml = '';
+            if (pinnedRepos && pinnedRepos.length > 0) {
+                pinnedHtml = `
+                    <div class="pinned-repos">
+                        <h4>📌 Pinned Repositories</h4>
+                        <div class="pinned-grid">
+                            ${pinnedRepos.map(repo => `
+                                <div class="pinned-card">
+                                    <h5>
+                                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
+                                        <button class="summarize-btn" onclick="getReadmeSummary('${repo.owner.login}', '${repo.name}', this)">Summarize</button>
+                                    </h5>
+                                    <p>${repo.description || 'No description.'}</p>
+                                    ${renderTopicPills(repo.topics)}
+                                    <div style="margin-top: auto; padding-top: 10px;">
+                                        <span>⭐ ${repo.stargazers_count}</span>
+                                        <span>️🔄 ${repo.forks_count}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const gridHtml = `<div class="dashboard-grid"><div class="sidebar"><h4>Profile Stats</h4><p><strong>Followers:</strong> ${profile.followers}</p><p><strong>Following:</strong> ${profile.following}</p><p><strong>Public Repos:</strong> ${profile.public_repos}</p><p><strong>Joined:</strong> ${new Date(profile.created_at).toLocaleDateString()}</p><h4>Activity</h4><p><strong>Longest Streak:</strong> <span id="streak-data">Loading...</span></p><h4>Top Languages</h4><canvas id="languageChart"></canvas></div><div class="main-content"><div class="repo-list"><h4>Latest Repositories</h4><div class="repo-list-container"><ul id="repo-list-ul">${renderRepos(repos)}</ul></div><div id="load-more-container">${repos.length >= 30 ? '<button id="load-more-btn" class="animated">Load More</button>' : ''}</div></div></div></div>`;
+            
+            resultsDiv.innerHTML = profileHtml + pinnedHtml + gridHtml;
+            
+            if (langStats && langStats.length > 0) {
+                const chartCanvas = document.getElementById('languageChart').getContext('2d');
+                if(languageChart) languageChart.destroy();
+                languageChart = new Chart(chartCanvas, { type: 'doughnut', data: { labels: langStats.map(lang => lang[0]), datasets: [{ data: langStats.map(lang => lang[1]), backgroundColor: ['#58a6ff', '#ff7b72', '#f1e05a', '#a97bff', '#388bfd'] }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#e6edf3' }, position: 'top' } } } });
+            }
+            const loadMoreButton = document.getElementById('load-more-btn');
+            if (loadMoreButton) loadMoreButton.addEventListener('click', loadMoreRepos);
+        };
+
+        const handleSearch = () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+                performSearch(username);
+            }
+        };
+
+        searchButton.addEventListener('click', handleSearch);
+        usernameInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') handleSearch(); });
+        modalCloseBtn.addEventListener('click', () => summaryModal.style.display = 'none');
+        window.addEventListener('click', (event) => { if (event.target == summaryModal) summaryModal.style.display = 'none'; });
+
+        // NEW: Check for a username in the URL when the page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const username = params.get('q');
+            if (username) {
+                usernameInput.value = username;
+                performSearch(username);
+            }
+        });
+    </script>
+</body>
+</html>
+
