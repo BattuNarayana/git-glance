@@ -1,117 +1,145 @@
 GitGlance AI Dashboard
-<!-- Replace with a real screenshot URL -->
 
-GitGlance is a full-stack, AI-powered web application designed to provide deep, at-a-glance analytics for GitHub user profiles. Created for developers, hiring managers, and technical recruiters, it transforms a standard GitHub profile into a rich, interactive dashboard, saving time and revealing key insights about a developer's activity, skills, and focus.
+GitGlance is a deep-dive analytics platform for GitHub profiles, designed to provide comprehensive insights at a glance. It goes beyond basic stats, offering AI-powered summaries, activity analysis, and a polished user interface.
 
-This project evolved from a simple command-line tool into a complete, containerized, high-performance web service with an AI-driven feature set, demonstrating a wide breadth of modern software engineering principles and technologies.
+![GitGlance Dashboard Screenshot](https://github.com/user-attachments/assets/d85f1ccc-070d-4cde-9277-852a42891144)
 
-✨ Core Features
-Interactive Web Dashboard: A clean, dynamic, and responsive UI built with vanilla JavaScript, HTML, and CSS.
+The Problem Solved
 
-Comprehensive Profile Analytics: Displays key stats, top languages (visualized with Chart.js), and pinned repositories.
+Recruiters, hiring managers, and developers often need a quick, comprehensive overview of a GitHub user's profile to understand their skills, activity, and key projects. Navigating the full GitHub UI can be time-consuming and doesn't always surface the most critical information immediately.
 
-AI-Powered README Summaries: Integrates the Gemini API to provide on-demand, AI-generated summaries of any project's README file, saving recruiters valuable time.
+The Solution: GitGlance
 
-Deep Activity Insights: Features a custom-built backend process to analyze a user's event history and calculate their longest consecutive contribution streak.
+GitGlance provides a fast, insightful, and visually appealing web dashboard that aggregates and analyzes key GitHub profile data, including:
 
-Infinite Scroll: A "Load More" feature allows users to seamlessly browse through a developer's entire repository history.
+Core Profile Info: Name, bio, location, company, join date.
 
-Shareable URLs: The application state is managed in the URL, allowing users to share direct links to a specific user's dashboard.
+Key Stats: Follower/following count, public repository count.
 
-🛠️ Architecture & Tech Stack
-This project was architected as a modern, multi-tiered web application, showcasing skills in both backend and frontend development.
+📌 Pinned Repositories: Highlights the user's most important projects.
 
-Tier
+📊 Top Languages: A visual chart (doughnut) showing the primary languages used in recent repositories.
 
-Technology / Concept
+✨ AI Persona Summary: A concise, AI-generated summary of the developer's profile, highlighting their likely skills and focus areas.
 
-Purpose
+📜 Latest Repositories: A scrollable list of the user's recent public repositories with descriptions, star/fork counts, and topic tags (skills).
 
-Frontend
+🤖 AI README Summarizer: On-demand, AI-powered summaries of individual repository README files.
 
-HTML5, CSS3, JavaScript
+🏃 Activity Streak: Calculates the user's longest streak of consecutive contribution days based on recent public events.
 
-To build a dynamic, responsive, and user-friendly single-page application.
+🌓 Theme Toggle: Switch between professional dark and light modes.
+
+🔗 Shareable URLs: Search results update the URL (/?q=username), allowing direct linking to specific profiles.
+
+Technologies & Architecture
+
+GitGlance is a full-stack application built with a modern, professional technology stack:
+
+Backend:
+
+Language: Python 3
+
+Framework: Flask (for the web server and REST API)
+
+API Integrations:
+
+GitHub REST API (v3): For core profile and repository data.
+
+GitHub GraphQL API (v4): For fetching pinned repositories efficiently.
+
+Google Gemini API: For AI-powered README summarization and developer persona generation.
+
+Caching: Redis (running in Docker) for high-performance caching of API results (user data, repos, summaries, personas, streaks), significantly reducing latency and API usage. Includes robust retry logic (exponential backoff) for external API calls.
+
+Configuration: python-dotenv for securely managing API keys (.env file).
+
+Frontend:
+
+Structure: HTML5
+
+Styling: CSS3 (including CSS Variables for theming, Flexbox, Grid, animations)
+
+Interactivity: Vanilla JavaScript (ES6+)
+
+Fetching data from the backend API (fetch).
+
+Asynchronous loading for performance (profile loads instantly, stats update as ready).
+
+Dynamic DOM manipulation to build the dashboard.
+
+Chart.js for language visualization.
+
+URL state management (history.pushState, URLSearchParams).
+
+Local Storage for theme preference persistence.
+
+Development & Deployment:
+
+Containerization: Docker & Dockerfile used to package the Redis service and (optionally) the Flask application itself for easy setup and deployment.
+
+Testing: pytest for backend unit tests (demonstrated in initial CLI version, can be expanded for Flask).
+
+Version Control: Git & GitHub.
+
+Project Structure
+
+git-glance/
+├── templates/
+│   └── index.html       # Frontend HTML, CSS, and JavaScript
+├── .env                 # Stores API keys (GITHUB_TOKEN, GEMINI_API_KEY) - *Not committed*
+├── .gitignore           # Specifies files/folders for Git to ignore
+├── app.py               # Flask backend web server and API endpoints
+├── Dockerfile           # Recipe to containerize the Flask app (optional for running)
+├── logic.py             # Core backend logic (API calls, caching, AI prompts, data processing)
+├── main.py              # Original CLI version (kept for reference/testing)
+├── README.md            # This file
+├── requirements.txt     # Python dependencies
+└── test_main.py         # Pytest tests for the original CLI logic
 
 
+Running the Application Locally
 
-Chart.js
+Prerequisites:
 
-For rich data visualization of language statistics.
+Python 3.8+
 
-Backend
+Docker Desktop (running)
 
-Python
+Git
 
-The core programming language for the application logic.
+Setup:
 
+Clone the repository:
 
-
-Flask
-
-A lightweight web framework used to build the backend REST API.
-
-
-
-Gemini API
-
-For state-of-the-art AI-powered text summarization.
-
-Database
-
-Redis
-
-A high-performance, in-memory database used for caching API responses.
-
-DevOps
-
-Docker
-
-For containerizing both the Redis server and the core application.
-
-APIs
-
-GitHub REST API & GraphQL API
-
-Used to fetch user profiles, repositories, activity events, and pinned projects.
-
-Testing
-
-pytest
-
-To ensure the reliability and correctness of the backend logic.
-
-🚀 Running the Project Locally
-To run GitGlance on your local machine, you will need Docker and Python installed.
-
-1. Clone the Repository
-git clone [https://github.com/your-username/git-glance.git](https://github.com/your-username/git-glance.git)
+git clone [https://github.com/BattuNarayana/git-glance.git](https://github.com/BattuNarayana/git-glance.git)
 cd git-glance
 
-2. Set Up Environment Variables
-Create a .env file in the root of the project and add your API keys:
+
+Create and configure the .env file:
+
+Create a file named .env in the project root.
+
+Add your API keys:
 
 GITHUB_TOKEN=ghp_YourGitHubPersonalAccessToken
-GEMINI_API_KEY=YourGoogleAIGeminiAPIKey
+GEMINI_API_KEY=YourGoogleGeminiAPIKey
 
-3. Start the Redis Server
-Run the Redis database using Docker:
 
-docker run -d --name redis-stack -p 6379:6379 redis/redis-stack:latest
+(See GitHub/Google AI Studio docs for how to generate these keys)
 
-4. Install Dependencies
-Install all the required Python packages:
+Install Python dependencies:
 
 pip install -r requirements.txt
 
-5. Run the Web Application
-Start the Flask development server:
+
+Start the Redis container:
+
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+
+
+(If the container already exists from a previous run, use docker start redis-stack instead)
+
+Run the Flask application:
 
 python app.py
-
-The application will be available at http://127.0.0.1:5001.
-
-🧪 Running the Tests
-To ensure the backend logic is working correctly, you can run the automated test suite:
-
-pytest
