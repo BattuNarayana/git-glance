@@ -112,8 +112,10 @@ To run GitGlance locally from the source code:
 
 6.  **Open the dashboard:**
     ```bash
-    Visit http://localhost:5000 in your browser.
+    http://localhost:5000
     ```
+
+    (Visit localhost in your browser.)
 
 7.  **Run backend tests (optional):**
     ```bash
