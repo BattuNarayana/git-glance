@@ -122,23 +122,6 @@ To run GitGlance locally from the source code:
 
 ---
 
-### Project Structure
-
-git-glance/
-├── templates/
-│   └── index.html        # Frontend structure (HTML, CSS, JS)
-├── .env                  # Environment variables (not committed)
-├── .gitignore            # Git ignore rules
-├── app.py                # Flask backend web server & API
-├── logic.py              # Core logic (API calls, caching, AI)
-├── main.py               # Original CLI prototype
-├── Dockerfile            # Optional container setup
-├── requirements.txt      # Dependencies list
-├── test_main.py          # Unit tests (pytest)
-└── README.md             # Documentation
-
----
-
 ### License
 
 This project is licensed under the MIT License.
