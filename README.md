@@ -9,7 +9,7 @@ A full-stack, AI-driven analytics platform that delivers an instant, comprehensi
 
 ### ► Get The Application
 
-Access the latest release for developers and users on the GitHub Releases page
+Access the latest release for developers and users on the [**GitHub Releases page](https://github.com/BattuNarayana/git-glance/releases)**.
 
 ---
 
