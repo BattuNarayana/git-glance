@@ -1,132 +1,106 @@
-GitGlance AI Dashboard
+GitGlance – AI-Powered GitHub Analytics Dashboard
 
-GitGlance is a deep-dive analytics platform for GitHub profiles, designed to provide comprehensive insights at a glance. It goes beyond basic stats, offering AI-powered summaries, activity analysis, and a polished user interface.
 
-![GitGlance Dashboard Screenshot](https://github.com/user-attachments/assets/d85f1ccc-070d-4cde-9277-852a42891144)
 
-The Problem Solved
 
-Recruiters, hiring managers, and developers often need a quick, comprehensive overview of a GitHub user's profile to understand their skills, activity, and key projects. Navigating the full GitHub UI can be time-consuming and doesn't always surface the most critical information immediately.
+A full-stack, AI-driven analytics platform that delivers an instant, comprehensive view of any GitHub profile — blending data visualization, caching, and AI summarization into one elegant dashboard.
 
-The Solution: GitGlance
+► Get The Application
 
-GitGlance provides a fast, insightful, and visually appealing web dashboard that aggregates and analyzes key GitHub profile data, including:
+Access the latest release for developers and users on the GitHub Releases page
+.
 
-Core Profile Info: Name, bio, location, company, join date.
+Key Features
 
-Key Stats: Follower/following count, public repository count.
+GitGlance transforms how developers, recruiters, and hiring managers interpret GitHub activity, providing real-time, AI-enhanced insights:
 
-📌 Pinned Repositories: Highlights the user's most important projects.
+📌 Core Profile Overview: Displays name, bio, company, location, and join date in a clean layout.
 
-📊 Top Languages: A visual chart (doughnut) showing the primary languages used in recent repositories.
+📊 Key Statistics: Shows follower/following counts, repository totals, and contribution activity.
 
-✨ AI Persona Summary: A concise, AI-generated summary of the developer's profile, highlighting their likely skills and focus areas.
+⭐ Pinned Repositories: Fetches highlighted projects using the GitHub GraphQL API.
 
-📜 Latest Repositories: A scrollable list of the user's recent public repositories with descriptions, star/fork counts, and topic tags (skills).
+🧠 AI Persona Summary: Generates a concise AI-driven summary of the developer’s skills, focus areas, and strengths.
 
-🤖 AI README Summarizer: On-demand, AI-powered summaries of individual repository README files.
+📜 Recent Repositories: Lists latest repositories with metadata—stars, forks, and topic tags.
 
-🏃 Activity Streak: Calculates the user's longest streak of consecutive contribution days based on recent public events.
+🤖 AI README Summarizer: Summarizes repository README files using the Google Gemini API.
 
-🌓 Theme Toggle: Switch between professional dark and light modes.
+🔥 Activity Streak Analysis: Computes the user’s longest contribution streak using real GitHub event data.
 
-🔗 Shareable URLs: Search results update the URL (/?q=username), allowing direct linking to specific profiles.
+🎨 Top Languages Visualization: Displays a dynamic doughnut chart of the most-used languages via Chart.js.
 
-Technologies & Architecture
+🌓 Theme Toggle: Supports light/dark modes with persistent local storage.
 
-GitGlance is a full-stack application built with a modern, professional technology stack:
+🔗 Shareable URLs: Enables direct profile links using query parameters (/?q=username).
 
-Backend:
+Technology Stack
+
+GitGlance is architected with scalability, modularity, and performance in mind.
+
+Backend
 
 Language: Python 3
 
-Framework: Flask (for the web server and REST API)
+Framework: Flask
 
-API Integrations:
+APIs:
 
-GitHub REST API (v3): For core profile and repository data.
+GitHub REST API (v3)
 
-GitHub GraphQL API (v4): For fetching pinned repositories efficiently.
+GitHub GraphQL API (v4)
 
-Google Gemini API: For AI-powered README summarization and developer persona generation.
+Google Gemini API
 
-Caching: Redis (running in Docker) for high-performance caching of API results (user data, repos, summaries, personas, streaks), significantly reducing latency and API usage. Includes robust retry logic (exponential backoff) for external API calls.
+Caching: Redis (via Docker) for storing user, repo, and summary data
 
-Configuration: python-dotenv for securely managing API keys (.env file).
+Configuration: python-dotenv for secure environment management
 
-Frontend:
+Testing: pytest for backend validation
 
-Structure: HTML5
+Frontend
 
-Styling: CSS3 (including CSS Variables for theming, Flexbox, Grid, animations)
+Structure: HTML5 + Vanilla JavaScript (ES6+)
 
-Interactivity: Vanilla JavaScript (ES6+)
+Styling: CSS3 (Flexbox, Grid, CSS Variables, animations)
 
-Fetching data from the backend API (fetch).
+Visualization: Chart.js for graphical insights
 
-Asynchronous loading for performance (profile loads instantly, stats update as ready).
+Behavior:
 
-Dynamic DOM manipulation to build the dashboard.
+Asynchronous data fetching
 
-Chart.js for language visualization.
+Dynamic DOM updates
 
-URL state management (history.pushState, URLSearchParams).
+URL state management
 
-Local Storage for theme preference persistence.
+Local theme persistence
 
-Development & Deployment:
+DevOps & Packaging
 
-Containerization: Docker & Dockerfile used to package the Redis service and (optionally) the Flask application itself for easy setup and deployment.
+Containerization: Docker & Dockerfile for Redis and optional Flask deployment
 
-Testing: pytest for backend unit tests (demonstrated in initial CLI version, can be expanded for Flask).
+Version Control: Git & GitHub
 
-Version Control: Git & GitHub.
+Logging: Console-based and extendable for production environments
 
-Project Structure
+Installation & Usage (for Developers)
 
-git-glance/
-├── templates/
-│   └── index.html       # Frontend HTML, CSS, and JavaScript
-├── .env                 # Stores API keys (GITHUB_TOKEN, GEMINI_API_KEY) - *Not committed*
-├── .gitignore           # Specifies files/folders for Git to ignore
-├── app.py               # Flask backend web server and API endpoints
-├── Dockerfile           # Recipe to containerize the Flask app (optional for running)
-├── logic.py             # Core backend logic (API calls, caching, AI prompts, data processing)
-├── main.py              # Original CLI version (kept for reference/testing)
-├── README.md            # This file
-├── requirements.txt     # Python dependencies
-└── test_main.py         # Pytest tests for the original CLI logic
-
-
-Running the Application Locally
-
-Prerequisites:
-
-Python 3.8+
-
-Docker Desktop (running)
-
-Git
-
-Setup:
+To run GitGlance locally from the source code:
 
 Clone the repository:
 
-git clone [https://github.com/BattuNarayana/git-glance.git](https://github.com/BattuNarayana/git-glance.git)
+git clone https://github.com/BattuNarayana/git-glance.git
 cd git-glance
 
 
 Create and configure the .env file:
 
-Create a file named .env in the project root.
-
-Add your API keys:
-
 GITHUB_TOKEN=ghp_YourGitHubPersonalAccessToken
 GEMINI_API_KEY=YourGoogleGeminiAPIKey
 
 
-(See GitHub/Google AI Studio docs for how to generate these keys)
+(Refer to GitHub and Google AI Studio documentation for API key creation.)
 
 Install Python dependencies:
 
@@ -138,8 +112,35 @@ Start the Redis container:
 docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 
 
-(If the container already exists from a previous run, use docker start redis-stack instead)
+(If already created, use docker start redis-stack.)
 
 Run the Flask application:
 
 python app.py
+
+
+Open the dashboard:
+Visit http://localhost:5000 in your browser.
+
+Run backend tests (optional):
+
+pytest
+
+Project Structure
+git-glance/
+├── templates/
+│   └── index.html        # Frontend structure (HTML, CSS, JS)
+├── .env                  # Environment variables (not committed)
+├── .gitignore            # Git ignore rules
+├── app.py                # Flask backend web server & API
+├── logic.py              # Core logic (API calls, caching, AI)
+├── main.py               # Original CLI prototype
+├── Dockerfile            # Optional container setup
+├── requirements.txt      # Dependencies list
+├── test_main.py          # Unit tests (pytest)
+└── README.md             # Documentation
+
+License
+
+This project is licensed under the MIT License.
+See the LICENSE file for full details.
