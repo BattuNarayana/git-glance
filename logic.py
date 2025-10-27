@@ -6,15 +6,24 @@ import time
 from collections import Counter
 from datetime import datetime, timedelta
 
-# --- Redis Connection ---
+# --- Redis Connection (PRODUCTION-READY) ---
 try:
-    # Use localhost as confirmed working
-    redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True) 
+    # Look for the production REDIS_URL first (this will be set by Render)
+    redis_url = os.getenv('REDIS_URL')
+    if redis_url:
+        print("Connecting to cloud Redis...")
+        redis_client = redis.Redis.from_url(redis_url, decode_responses=True)
+    else:
+        # Fallback to localhost for local development
+        print("REDIS_URL not found. Connecting to localhost...")
+        redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+    
     redis_client.ping()
     print("Successfully connected to Redis.") 
 except redis.exceptions.ConnectionError as e:
-    print(f"CRITICAL ERROR: Could not connect to Redis at localhost:6379. {e}")
-    print("Please ensure the Redis Docker container is running ('docker start redis-stack').")
+    # This error will now catch both local and cloud connection failures
+    print(f"CRITICAL ERROR: Could not connect to Redis. {e}")
+    print("Please ensure Redis is running (local or cloud).")
     redis_client = None 
     
 # --- Cache Durations ---

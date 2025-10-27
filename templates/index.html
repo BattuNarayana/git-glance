@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,6 @@
             --pill-bg-color: #388bfd20;
             --pill-text-color: #79c0ff;
             --chart-label-color: #e6edf3;
-            --chart-grid-color: #21262d; 
             --chart-bg-1: #58a6ff;  /* Blue */
             --chart-bg-2: #ff7b72;  /* Red/Orange */
             --chart-bg-3: #f1e05a;  /* Yellow */
@@ -31,9 +30,6 @@
             --gradient-2: #161b22;
             --gradient-3: #010409;
             --header-accent: #238636;
-            
-            /* --- YOUR DARK MODE LOADER IMAGE --- */
-            --loader-image-url: url('https://github.com/user-attachments/assets/8ed86ee9-1afa-45b3-a373-4e19be5833f4'); 
         }
 
         body.light-mode {
@@ -48,8 +44,7 @@
             --button-hover-bg-color: #219a42;
             --pill-bg-color: #ddf4ff;
             --pill-text-color: #0969da;
-            --chart-label-color: #24292f; 
-            --chart-grid-color: #ebedf0; 
+            --chart-label-color: #24292f;
             --chart-bg-1: #0969da; /* Blue */
             --chart-bg-2: #cf222e; /* Red */
             --chart-bg-3: #bf8700; /* Yellow */
@@ -60,114 +55,127 @@
             --gradient-2: #ffffff;
             --gradient-3: #f0f2f5;
             --header-accent: #1a7f37;
-
-            /* --- YOUR LIGHT MODE LOADER IMAGE --- */
-            --loader-image-url: url('https://github.com/user-attachments/assets/a22ffc59-f622-4a9d-8ddf-99791aad913d'); 
         }
 
-        /* General Styles (Unchanged) */
+        /* General Styles using Variables */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-color);
             margin: 0;
-            padding: 1em; /* Use 1em padding for better mobile feel */
+            padding: 2em;
             background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
             transition: background-color 0.3s, color 0.3s;
         }
-        @keyframes gradientAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        @keyframes gradientAnimation { /* Unchanged */ }
+
         .container { max-width: 900px; margin: auto; }
-        #theme-toggle { position: fixed; top: 10px; right: 10px; background: var(--bg-card-color); border: 1px solid var(--border-color); color: var(--text-secondary-color); padding: 8px 12px; border-radius: 6px; cursor: pointer; z-index: 1001; font-size: 14px; }
-        .search-box, .profile-header, .persona-summary, .pinned-card, .sidebar, .main-content, .contribution-heatmap, .modal-content { background: var(--bg-card-color); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 12px; transition: background-color 0.3s, border-color 0.3s; }
-        .search-box { padding: 1.5em; text-align: center; margin-bottom: 1.5em; }
-        /* Responsive search input */
-        .search-box div { display: flex; flex-direction: column; gap: 10px; }
-        input[type="text"] { width: 100%; padding: 12px; font-size: 16px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-color); color: var(--text-color); box-sizing: border-box; /* Include padding in width */ }
-        button { width: 100%; padding: 12px 24px; font-size: 16px; border: none; background-color: var(--button-bg-color); color: white; border-radius: 6px; cursor: pointer; margin-left: 0; transition: background-color 0.2s; }
+
+        /* Theme Toggle Button */
+        #theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            background: var(--bg-card-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 1001; /* Above modal */
+            font-size: 14px;
+        }
+
+        /* Card-like elements using variables */
+        .search-box, .profile-header, .persona-summary, .pinned-card, .sidebar, .main-content, .contribution-heatmap, .modal-content {
+            background: var(--bg-card-color);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .search-box { padding: 2em; text-align: center; margin-bottom: 2em; }
+        input[type="text"] { width: 60%; padding: 12px; font-size: 16px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-color); color: var(--text-color); }
+        button { padding: 12px 24px; font-size: 16px; border: none; background-color: var(--button-bg-color); color: white; border-radius: 6px; cursor: pointer; margin-left: 10px; transition: background-color 0.2s; }
         button:hover { background-color: var(--button-hover-bg-color); }
-        
+
         .summarize-btn { background-color: var(--border-color); color: var(--text-secondary-color); font-size: 12px; padding: 5px 10px; margin-left: 10px; vertical-align: middle; }
         .summarize-btn:hover { background-color: var(--text-secondary-color); color: var(--bg-secondary-color); }
         .summarize-btn:disabled { background-color: var(--bg-color); cursor: not-allowed; }
+
         #results { display: none; }
-        /* Responsive profile header */
-        .profile-header { padding: 1.5em; margin-bottom: 1.5em; display: flex; flex-direction: column; /* Stack on mobile */ align-items: center; gap: 15px; animation: slideUpFadeIn 0.5s ease-out forwards; text-align: center; }
+        .profile-header { padding: 2em; margin-bottom: 2em; display: flex; align-items: center; gap: 20px; animation: slideUpFadeIn 0.5s ease-out forwards; }
         .profile-header img { border-radius: 50%; width: 100px; height: 100px; border: 2px solid var(--border-color); }
         .profile-header h2 { margin: 0; }
-        .profile-header a { color: var(--link-color); text-decoration: none;}
-        .persona-summary { padding: 1.5em; margin-bottom: 1.5em; animation: slideUpFadeIn 0.6s ease-out forwards; border-left: 4px solid var(--header-accent);}
+        .profile-header a { color: var(--link-color); text-decoration: none;} /* Added link color */
+
+        .persona-summary { padding: 1.5em; margin-bottom: 2em; animation: slideUpFadeIn 0.6s ease-out forwards; border-left: 4px solid var(--header-accent);}
         .persona-summary h4 { margin-top: 0; border-bottom: none; }
         .persona-summary p { margin-bottom: 0; line-height: 1.6; }
-        .pinned-repos { margin-bottom: 1.5em; animation: slideUpFadeIn 0.7s ease-out forwards; }
-        .pinned-grid { display: grid; grid-template-columns: 1fr; /* Default to 1 column */ gap: 1.5em; }
+
+        .pinned-repos { margin-bottom: 2em; animation: slideUpFadeIn 0.7s ease-out forwards; }
+        .pinned-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; }
         .pinned-card { padding: 1.5em; display: flex; flex-direction: column; }
         .pinned-card h5 { margin: 0 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Responsive dashboard grid */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; /* Default to 1 column */ gap: 1.5em; animation: slideUpFadeIn 0.9s ease-out forwards;}
-        .sidebar, .main-content { padding: 1.5em; }
-        
-        h4 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-color); }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2em; animation: slideUpFadeIn 0.9s ease-out forwards;}
+        .sidebar, .main-content { padding: 2em; }
+        h4 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-color); } /* Use primary text color for headers */
+
         .repo-list-container { max-height: 600px; overflow-y: auto; padding-right: 15px; }
+
         .repo-list ul { list-style: none; padding: 0; margin: 0; }
         .repo-list li { border-bottom: 1px solid var(--border-color); padding: 15px 0; }
         .repo-list li:last-child { border-bottom: none; }
         .repo-list a { text-decoration: none; color: var(--link-color); font-weight: bold; font-size: 1.1em; }
         .repo-list p { font-size: 0.9em; color: var(--text-secondary-color); margin: 8px 0 8px; }
         .repo-list span { font-size: 0.8em; color: var(--text-secondary-color); margin-right: 15px; }
-        #load-more-container { text-align: center; margin-top: 1.5em; display: none; } /* --- HIDDEN --- */
-        #clear-filter-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary-color); font-size: 12px; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-left: 10px; vertical-align: middle; }
+        #load-more-container { text-align: center; margin-top: 1.5em; }
+        /* Style for Clear Filter button */
+        #clear-filter-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary-color);
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            vertical-align: middle; /* Align with header */
+        }
         #clear-filter-btn:hover { background-color: var(--border-color); }
+
+
         .topic-pills { margin-top: 10px; }
         .topic-pill { display: inline-block; background-color: var(--pill-bg-color); color: var(--pill-text-color); padding: 4px 12px; border-radius: 16px; font-size: 12px; margin-right: 5px; margin-bottom: 5px; }
-        
-        /* Modal Styles */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--modal-bg); padding: 1.5em; border-radius: 12px; max-width: 600px; width: 90%; border: 1px solid var(--border-color); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin: auto; text-align: center; }
+
+        /* --- CORRECTED Modal Styles --- */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); 
+            display: none; /* Keep hidden by default */
+            justify-content: center; align-items: center; 
+            z-index: 1000; backdrop-filter: blur(5px); 
+        }
+        .modal-content { 
+            background: var(--modal-bg); padding: 2em; border-radius: 12px; 
+            max-width: 600px; width: 90%; border: 1px solid var(--border-color); 
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            margin: auto; 
+        }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-secondary-color); }
-        #summary-content { max-height: 60vh; overflow-y: auto; text-align: left; } 
+        #summary-content { max-height: 60vh; overflow-y: auto; } /* Add scroll for long summaries */
         #summary-content ul { padding-left: 20px; line-height: 1.6; }
         #summary-content li { margin-bottom: 10px; }
 
-        /* --- Your Custom Image Loader Styles --- */
-        .thinking-cat-loader {
-            display: block;
-            width: 250px; 
-            height: 200px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            margin: 1.5em auto; /* Center the div */
-            background-image: var(--loader-image-url);
-            transition: background-image 0.2s ease-in-out, background-color 0.2s ease-in-out, border-radius 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            
-            /* --- NEW: Blending properties --- */
-            background-color: var(--modal-bg); /* Match modal background */
-            border-radius: 12px; /* Rounded corners */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-        }
-
-        @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUpFadeIn { /* Unchanged */ }
         .animated { animation: slideUpFadeIn 0.5s ease-out forwards; }
-
-        /* --- Media Queries (Unchanged) --- */
-        @media (min-width: 600px) {
-            .search-box div { flex-direction: row; }
-            input[type="text"] { width: 60%; }
-            button { width: auto; margin-left: 10px; }
-            .profile-header { flex-direction: row; text-align: left; }
-            .pinned-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (min-width: 768px) {
-            body { padding: 2em; }
-            .search-box, .profile-header, .pinned-card, .sidebar, .main-content, .modal-content { padding: 2em; }
-            .dashboard-grid { grid-template-columns: 1fr 2fr; }
-             .pinned-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-        }
     </style>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
     <button id="theme-toggle" title="Toggle Theme">🌙</button>
 
     <div class="container">
@@ -186,8 +194,7 @@
          <div class="modal-content">
             <span class="modal-close" id="modal-close-btn">&times;</span>
             <h4>AI-Powered README Summary</h4>
-            <div id="summary-content">
-                <!-- Content is set by JavaScript --></div>
+            <div id="summary-content"></div>
         </div>
     </div>
 
@@ -202,33 +209,25 @@
             const modalCloseBtn = document.getElementById('modal-close-btn');
 
             let languageChart = null;
+            let currentPage = 1;
             let currentUsername = '';
             let fullRepoList = []; 
 
-            // --- Theme Handling Logic ---
-            const applyTheme = (theme) => { 
+            // --- Theme Handling Logic (Unchanged) ---
+            const applyTheme = (theme) => { /* ... */ 
                 const isLight = theme === 'light';
                 document.body.classList.toggle('light-mode', isLight);
                 if (themeToggle) themeToggle.textContent = isLight ? '☀️' : '🌙'; 
                 localStorage.setItem('theme', theme);
                 if (languageChart) {
-                    const labelColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color').trim();
-                    const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary-color').trim();
-                    const backgroundColors = [ 
-                        getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-1').trim(), 
-                        getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-2').trim(), 
-                        getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-3').trim(), 
-                        getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-4').trim(), 
-                        getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-5').trim() 
-                    ];
-                    
-                    languageChart.options.plugins.legend.labels.color = labelColor;
-                    languageChart.data.datasets[0].backgroundColor = backgroundColors;
-                    languageChart.data.datasets[0].borderColor = borderColor;
-                    languageChart.update();
+                    const labelColor = isLight ? getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() : getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+                    if (languageChart.options.plugins.legend.labels.color !== labelColor) {
+                        languageChart.options.plugins.legend.labels.color = labelColor;
+                        languageChart.update();
+                    }
                 }
             };
-            const toggleTheme = () => { 
+            const toggleTheme = () => { /* ... */ 
                 const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
                 applyTheme(currentTheme === 'light' ? 'dark' : 'light');
             };
@@ -237,17 +236,11 @@
             if (themeToggle) { themeToggle.addEventListener('click', toggleTheme); } 
             else { console.error("Theme toggle button not found!"); }
 
-            // --- Your Custom Image Loader HTML ---
-            const thinkingCatLoaderHTML = `
-                <div class="thinking-cat-loader">
-                    <!-- This div is styled by CSS with your theme-switching background images --></div>
-            `;
-
-            // --- Summarizer Logic (Updated to use custom loader) ---
-             window.getReadmeSummary = async (owner, repo, btn) => { 
+            // --- Summarizer Logic (Unchanged) ---
+             window.getReadmeSummary = async (owner, repo, btn) => { /* ... */ 
                  if(!btn) { console.error("Summarize button element not found."); return; }
                 btn.textContent = '...'; btn.disabled = true;
-                summaryContent.innerHTML = thinkingCatLoaderHTML; // Display your custom loader
+                summaryContent.innerHTML = '<p>Generating summary with AI...</p>';
                 summaryModal.style.display = 'flex'; 
                 let errorMessage = 'Failed to generate summary.'; 
                 try {
@@ -263,13 +256,13 @@
             };
             
             // --- Topic Pills (Unchanged) ---
-            const renderTopicPills = (topics) => { 
+            const renderTopicPills = (topics) => { /* ... */ 
                  if (!topics || !Array.isArray(topics) || topics.length === 0) return '';
                  return `<div class="topic-pills">${topics.map(topic => `<span class="topic-pill">${topic}</span>`).join('')}</div>`;
             };
 
             // --- Repo Rendering (Unchanged) ---
-            const renderRepos = (repos, isPinned = false) => { 
+            const renderRepos = (repos, isPinned = false) => { /* ... */ 
                 if (!Array.isArray(repos)) return ''; 
                 return repos.map(repo => {
                     if (!repo || typeof repo !== 'object' || !repo.owner || typeof repo.owner !== 'object' || !repo.owner.login || !repo.name || !repo.html_url) {
@@ -294,15 +287,15 @@
             };
             
             // --- Search & Fetch Logic (Unchanged) ---
-            const performSearch = async (username) => { 
-                currentUsername = username; 
+            const performSearch = async (username) => { /* ... */ 
+                currentUsername = username; currentPage = 1;
                 fullRepoList = []; 
                 const url = new URL(window.location);
                 url.searchParams.set('q', username);
                 if (window.location.href !== url.href) { window.history.pushState({username: username}, '', url); }
                 resultsDiv.style.display = 'block'; resultsDiv.innerHTML = '<p>Loading...</p>';
                 try {
-                    const profileResponse = await fetch(`/api/user/${currentUsername}?page=1`); 
+                    const profileResponse = await fetch(`/api/user/${currentUsername}?page=1`);
                     if (!profileResponse.ok) throw new Error(`User not found! (Status: ${profileResponse.status})`);
                     const profileData = await profileResponse.json();
                     console.log('Received Profile Data:', profileData); 
@@ -312,7 +305,7 @@
                     fetchPersonaData(currentUsername); 
                 } catch (error) { resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`; }
             };
-            const fetchActivityData = async (username) => { 
+            const fetchActivityData = async (username) => { /* ... */ 
                  try {
                     const activityResponse = await fetch(`/api/user/${username}/activity`);
                     if (activityResponse.ok) {
@@ -330,7 +323,7 @@
                     if (streakElement) streakElement.textContent = 'N/A';
                 }
             };
-            const fetchPersonaData = async (username) => { 
+            const fetchPersonaData = async (username) => { /* ... */ 
                  const personaElement = document.getElementById('persona-content');
                  if (!personaElement) return; 
                  personaElement.textContent = 'Generating AI persona...'; 
@@ -357,10 +350,25 @@
                 }
             };
             
-            // --- REMOVED: loadMoreRepos function ---
+            // --- Load More Logic (Unchanged) ---
+            const loadMoreRepos = async () => { /* ... */ 
+                currentPage++;
+                const loadMoreButton = document.getElementById('load-more-btn');
+                loadMoreButton.textContent = 'Loading...'; loadMoreButton.disabled = true;
+                try {
+                    const response = await fetch(`/api/user/${currentUsername}?page=${currentPage}`);
+                    const data = await response.json();
+                    const repoList = document.getElementById('repo-list-ul');
+                    if (data.repos && Array.isArray(data.repos) && data.repos.length > 0) {
+                        fullRepoList = fullRepoList.concat(data.repos); 
+                        repoList.insertAdjacentHTML('beforeend', renderRepos(data.repos, false)); 
+                        loadMoreButton.textContent = 'Load More'; loadMoreButton.disabled = false;
+                    } else { loadMoreButton.textContent = 'No More Repositories'; }
+                } catch (error) { loadMoreButton.textContent = 'Failed to Load'; console.error("Failed to load more repos:", error); }
+            };
 
-            // --- Filter Repos by Language (Unchanged) ---
-            const filterReposByLanguage = (language) => { 
+            // --- NEW: Filter Repos by Language (Unchanged) ---
+            const filterReposByLanguage = (language) => { /* ... */ 
                  console.log(`Filtering by language: ${language}`);
                  const filteredRepos = fullRepoList.filter(repo => repo && repo.language === language);
                  console.log(`Found ${filteredRepos.length} repos for ${language}`);
@@ -384,21 +392,21 @@
                  } else { console.error("Could not find repo list elements to apply filter."); }
             };
 
-            // --- Clear Repo Filter (Unchanged) ---
-            const clearRepoFilter = () => { 
+            // --- NEW: Clear Repo Filter (Unchanged) ---
+            const clearRepoFilter = () => { /* ... */ 
                  console.log("Clearing filter");
                  const repoListUl = document.getElementById('repo-list-ul');
                  const repoListContainer = document.querySelector('.repo-list');
                  const loadMoreContainer = document.getElementById('load-more-container');
                  const repoListHeader = repoListContainer.querySelector('h4');
                  if (repoListUl && repoListContainer && loadMoreContainer && repoListHeader) {
-                      repoListUl.innerHTML = renderRepos(fullRepoList, false); 
-                      loadMoreContainer.style.display = 'none'; // Keep "Load More" hidden
+                      repoListUl.innerHTML = renderRepos(fullRepoList.slice(0, 30), false); 
+                      loadMoreContainer.style.display = (fullRepoList.length >= 30) ? 'block' : 'none'; 
                       repoListHeader.innerHTML = 'Latest Repositories'; 
                  } else { console.error("Could not find repo list elements to clear filter."); }
             };
 
-            // --- Dashboard Rendering (Doughnut Chart) ---
+            // --- Dashboard Rendering (Updated chart rendering call) ---
             const renderDashboard = (profileData) => { 
                 if (!profileData || !profileData.profile) { console.error("Invalid profileData:", profileData); resultsDiv.innerHTML = '<p style="color: red;">Invalid data.</p>'; return; }
                 const profile = profileData.profile; const langStats = profileData.language_stats || []; const repos = profileData.repos || []; const pinnedRepos = profileData.pinned_repos || []; 
@@ -409,44 +417,32 @@
                 if (Array.isArray(pinnedRepos) && pinnedRepos.length > 0) { console.log(`Rendering ${pinnedRepos.length} pinned.`); pinnedHtml = `<div class="pinned-repos"><h4>📌 Pinned Repositories</h4><div class="pinned-grid">${renderRepos(pinnedRepos, true)}</div></div>`; } 
                 else { console.log('No valid pinned repos.'); }
                 const validRepos = Array.isArray(repos) ? repos : []; 
-                const gridHtml = `<div class="dashboard-grid"><div class="sidebar"><h4>Profile Stats</h4><p><strong>Followers:</strong> ${profile.followers}</p><p><strong>Following:</strong> ${profile.following}</p><p><strong>Public Repos:</strong> ${profile.public_repos}</p><p><strong>Joined:</strong> ${new Date(profile.created_at).toLocaleDateString()}</p><h4>Activity</h4><p><strong>Longest Streak:</strong> <span id="streak-data">Loading...</span></p><h4>Top Languages</h4><canvas id="languageChart"></canvas></div><div class="main-content"><div class="repo-list"><h4>Latest Repositories</h4><div class="repo-list-container"><ul id="repo-list-ul">${renderRepos(validRepos, false)}</ul></div><div id="load-more-container"></div></div></div></div>`;
+                const gridHtml = `<div class="dashboard-grid"><div class="sidebar"><h4>Profile Stats</h4><p><strong>Followers:</strong> ${profile.followers}</p><p><strong>Following:</strong> ${profile.following}</p><p><strong>Public Repos:</strong> ${profile.public_repos}</p><p><strong>Joined:</strong> ${new Date(profile.created_at).toLocaleDateString()}</p><h4>Activity</h4><p><strong>Longest Streak:</strong> <span id="streak-data">Loading...</span></p><h4>Top Languages</h4><canvas id="languageChart"></canvas></div><div class="main-content"><div class="repo-list"><h4>Latest Repositories</h4><div class="repo-list-container"><ul id="repo-list-ul">${renderRepos(validRepos, false)}</ul></div><div id="load-more-container">${(validRepos.length >= 30) ? '<button id="load-more-btn" class="animated">Load More</button>' : ''}</div></div></div></div>`;
                 resultsDiv.innerHTML = profileHtml + personaHtml + pinnedHtml + gridHtml; 
                 
                 if (langStats && langStats.length > 0) {
-                    const chartCanvas = document.getElementById('languageChart');
+                    const chartCanvas = document.getElementById('languageChart'); // Get the canvas element
+                     // --- THIS IS THE FIX ---
+                     // Ensure canvas exists AND get the context correctly
                     if (chartCanvas) {
                         const ctx = chartCanvas.getContext('2d'); 
-                        if (ctx) { 
+                        if (ctx) { // Check if context was acquired
                             if(languageChart) languageChart.destroy();
-                            
-                            const labelColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color').trim(); 
+                            const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                            const labelColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color').trim(); // Use CSS var directly
                             const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary-color').trim();
-                            const backgroundColors = [ 
-                                getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-1').trim(), 
-                                getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-2').trim(), 
-                                getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-3').trim(), 
-                                getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-4').trim(), 
-                                getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-5').trim() 
-                            ];
+                            const backgroundColors = [ getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-1').trim(), getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-2').trim(), getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-3').trim(), getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-4').trim(), getComputedStyle(document.documentElement).getPropertyValue('--chart-bg-5').trim() ];
                             
-                            languageChart = new Chart(ctx, { 
-                                type: 'doughnut', // --- SET TO DOUGHNUT ---
+                            languageChart = new Chart(ctx, { // Use ctx here
+                                type: 'doughnut', 
                                 data: { 
                                     labels: langStats.map(lang => lang[0]), 
-                                    datasets: [{ 
-                                        data: langStats.map(lang => lang[1]), 
-                                        backgroundColor: backgroundColors,
-                                        borderColor: borderColor, 
-                                        borderWidth: 2
-                                    }] 
+                                    datasets: [{ data: langStats.map(lang => lang[1]), backgroundColor: backgroundColors, borderColor: borderColor, borderWidth: 2 }] 
                                 }, 
                                 options: { 
                                     responsive: true, 
                                     plugins: { 
-                                        legend: { 
-                                            labels: { color: labelColor }, 
-                                            position: 'top' 
-                                        } 
+                                        legend: { labels: { color: labelColor }, position: 'top' } 
                                     },
                                     onClick: (event, elements) => {
                                         if (elements.length > 0) {
@@ -457,15 +453,20 @@
                                     }
                                 } 
                             });
-                        } else { console.error("Failed to get 2D context."); }
-                    } else { console.error("Canvas element not found."); }
-                } else { 
+                        } else {
+                             console.error("Failed to get 2D context for language chart canvas.");
+                        }
+                    } else {
+                         console.error("Language chart canvas element not found.");
+                    }
+                } else { // No language stats
                      const chartCanvas = document.getElementById('languageChart');
                      if (chartCanvas) { const ctx = chartCanvas.getContext('2d'); if (ctx) ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height); }
                      if(languageChart) languageChart.destroy(); languageChart = null;
                 }
                 
-                // --- REMOVED: Event listener for loadMoreButton ---
+                const loadMoreButton = document.getElementById('load-more-btn');
+                if (loadMoreButton) loadMoreButton.addEventListener('click', loadMoreRepos);
             };
 
             const handleSearch = () => {
@@ -473,13 +474,13 @@
                  if (username) performSearch(username);
             };
 
-            // --- Event Listeners (Unchanged) ---
+            // --- Event Listeners ---
              if (searchButton) { searchButton.addEventListener('click', handleSearch); } else { console.error("Search button not found!"); }
              if (usernameInput) { usernameInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') handleSearch(); }); } else { console.error("Username input not found!"); }
              if (modalCloseBtn) { modalCloseBtn.addEventListener('click', () => summaryModal.style.display = 'none'); } else { console.error("Modal close button not found!"); }
              if (summaryModal) { window.addEventListener('click', (event) => { if (event.target == summaryModal) summaryModal.style.display = 'none'; }); } else { console.error("Summary modal not found!"); }
 
-            // --- Initial Load Logic (Unchanged) ---
+            // --- Initial Load Logic ---
             const params = new URLSearchParams(window.location.search);
             const username = params.get('q');
             if (username) {
@@ -487,7 +488,7 @@
                 performSearch(username);
             }
 
-            // --- Popstate Logic (Unchanged) ---
+            // --- Popstate Logic ---
             window.addEventListener('popstate', (event) => {
                  if (event.state && event.state.username) {
                       usernameInput.value = event.state.username;
